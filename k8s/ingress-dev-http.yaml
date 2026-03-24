@@ -10,7 +10,7 @@ metadata:
 spec:
   ingressClassName: azure-application-gateway
   rules:
-    - host: dev.dattsr.online
+    - host: dev.dattasr.online
       http:
         paths:
           - path: /api
