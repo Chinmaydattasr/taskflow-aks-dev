@@ -1,0 +1,92 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  name: SelfHostedWindowsPool
+
+variables:
+  azureServiceConnection: 'sc-azure-main'
+  resourceGroupName: 'rg-devops-aks'
+  aksClusterName: 'aks-main-private'
+  acrName: 'youracrname'
+  acrLoginServer: 'youracrname.azurecr.io'
+  frontendImageRepository: 'taskflow-frontend'
+  backendImageRepository: 'taskflow-backend'
+  imageTag: '$(Build.BuildId)'
+
+stages:
+- stage: Build
+  jobs:
+  - job: BuildPushImages
+    steps:
+    - checkout: self
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: '$(azureServiceConnection)'
+        scriptType: 'ps'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          az acr build --registry $(acrName) --image $(frontendImageRepository):$(imageTag) --file Dockerfile.frontend .
+          az acr build --registry $(acrName) --image $(backendImageRepository):$(imageTag) --file Dockerfile.backend .
+
+- stage: DeployDev
+  dependsOn: Build
+  jobs:
+  - deployment: DeployDev
+    environment: 'aks-dev'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: '$(azureServiceConnection)'
+              scriptType: 'ps'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az aks get-credentials --resource-group $(resourceGroupName) --name $(aksClusterName) --overwrite-existing
+          - powershell: |
+              (Get-Content k8s\frontend-deployment-dev.yaml).Replace('YOUR_ACR', '$(acrName)').Replace('__IMAGE_TAG__', '$(imageTag)') | Set-Content k8s\frontend-deployment-dev.rendered.yaml
+              (Get-Content k8s\backend-deployment-dev.yaml).Replace('YOUR_ACR', '$(acrName)').Replace('__IMAGE_TAG__', '$(imageTag)') | Set-Content k8s\backend-deployment-dev.rendered.yaml
+              kubectl apply -f k8s\namespace-dev.yaml
+              kubectl apply -f k8s\configmap-dev.yaml
+              kubectl apply -f k8s\frontend-service-dev.yaml
+              kubectl apply -f k8s\backend-service-dev.yaml
+              kubectl apply -f k8s\frontend-deployment-dev.rendered.yaml
+              kubectl apply -f k8s\backend-deployment-dev.rendered.yaml
+              kubectl apply -f k8s\ingress-dev.yaml
+              kubectl rollout status deployment/frontend -n dev --timeout=240s
+              kubectl rollout status deployment/backend -n dev --timeout=240s
+
+- stage: DeployProd
+  dependsOn: DeployDev
+  jobs:
+  - deployment: DeployProd
+    environment: 'aks-prod'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: '$(azureServiceConnection)'
+              scriptType: 'ps'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az aks get-credentials --resource-group $(resourceGroupName) --name $(aksClusterName) --overwrite-existing
+          - powershell: |
+              (Get-Content k8s\frontend-deployment-prod.yaml).Replace('YOUR_ACR', '$(acrName)').Replace('__IMAGE_TAG__', '$(imageTag)') | Set-Content k8s\frontend-deployment-prod.rendered.yaml
+              (Get-Content k8s\backend-deployment-prod.yaml).Replace('YOUR_ACR', '$(acrName)').Replace('__IMAGE_TAG__', '$(imageTag)') | Set-Content k8s\backend-deployment-prod.rendered.yaml
+              kubectl apply -f k8s\namespace-prod.yaml
+              kubectl apply -f k8s\configmap-prod.yaml
+              kubectl apply -f k8s\frontend-service-prod.yaml
+              kubectl apply -f k8s\backend-service-prod.yaml
+              kubectl apply -f k8s\frontend-deployment-prod.rendered.yaml
+              kubectl apply -f k8s\backend-deployment-prod.rendered.yaml
+              kubectl apply -f k8s\ingress-prod.yaml
+              kubectl rollout status deployment/frontend -n prod --timeout=240s
+              kubectl rollout status deployment/backend -n prod --timeout=240s

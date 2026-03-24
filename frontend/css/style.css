@@ -1,0 +1,159 @@
+* { box-sizing: border-box; }
+:root {
+  --bg: #09111f;
+  --bg-2: #0d1728;
+  --panel: rgba(8, 15, 29, 0.78);
+  --panel-soft: rgba(255, 255, 255, 0.07);
+  --border: rgba(255, 255, 255, 0.12);
+  --text: #ecf4ff;
+  --muted: #9ab0cf;
+  --accent: #6d5efc;
+  --accent-2: #22c55e;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #38bdf8;
+  --shadow: 0 24px 60px rgba(0,0,0,0.28);
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Inter", sans-serif;
+  color: var(--text);
+  background: linear-gradient(135deg, var(--bg), #10192b 45%, #111827);
+}
+.page-bg {
+  position: fixed; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(circle at 10% 10%, rgba(109, 94, 252, 0.26), transparent 24%),
+    radial-gradient(circle at 90% 10%, rgba(56, 189, 248, 0.18), transparent 22%),
+    radial-gradient(circle at 85% 85%, rgba(34, 197, 94, 0.18), transparent 20%);
+}
+.shell {
+  position: relative;
+  min-height: 100vh;
+  padding: 24px;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 320px 1fr;
+}
+.glass {
+  backdrop-filter: blur(16px);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.glass-soft {
+  background: var(--panel-soft);
+  border: 1px solid var(--border);
+}
+.sidebar, .panel, .hero { border-radius: 28px; }
+.sidebar {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.brand-row { display:flex; gap:14px; align-items:center; }
+.logo {
+  width: 56px; height: 56px; border-radius: 20px; display:grid; place-items:center;
+  background: linear-gradient(135deg, var(--accent), var(--info)); font-weight: 800; font-size: 1.1rem;
+}
+.brand-row h1, .hero h2, .section-head h3, .board-header h3, .sidebar-card h3 { margin: 0; }
+.brand-row p, .hero-text, .mini-label, .task-date, .task-meta, .task-description, .empty-state p, .board-header p, .metric-card span { color: var(--muted); }
+.sidebar-card { padding: 18px; border-radius: 22px; }
+.gradient-card {
+  background: linear-gradient(135deg, rgba(109,94,252,0.26), rgba(56,189,248,0.18));
+  border: 1px solid rgba(255,255,255,0.14);
+}
+.metrics-grid { display:grid; gap:12px; grid-template-columns: repeat(2, 1fr); }
+.metric-card {
+  border-radius: 20px;
+  padding: 16px;
+  display:flex;
+  flex-direction:column;
+  gap: 8px;
+}
+.metric-card strong { font-size: 1.65rem; }
+.sidebar ul { margin: 0; padding-left: 18px; color: var(--muted); line-height: 1.7; }
+.main-content { display:flex; flex-direction:column; gap: 22px; }
+.hero { padding: 28px; display:flex; justify-content:space-between; gap:24px; align-items:flex-start; }
+.eyebrow, .mini-label {
+  text-transform: uppercase; letter-spacing: 0.18em; font-weight: 700; font-size: .75rem;
+}
+.eyebrow { color: #c4b5fd; margin:0 0 10px; }
+.hero h2 { font-size: 2rem; margin-bottom: 10px; }
+.hero-text { line-height: 1.75; max-width: 780px; margin: 0; }
+.hero-actions { display:flex; gap:12px; flex-wrap:wrap; }
+.grid-top { display:grid; gap:22px; grid-template-columns: 2fr 1fr; }
+.panel { padding: 24px; }
+.span-2 { min-height: 100%; }
+.section-head, .board-header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px; }
+.task-form {
+  display:grid;
+  gap:16px;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+}
+.field-group { display:flex; flex-direction:column; gap:8px; }
+.field-group.wide, .form-actions.wide { grid-column: 1 / -1; }
+label { font-size: .92rem; color: var(--muted); }
+input, select, textarea {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+  padding: 14px 16px;
+  outline: none;
+  font: inherit;
+}
+textarea { resize: vertical; }
+.toolbar.stack { display:flex; flex-direction:column; gap:12px; }
+.primary-btn, .secondary-btn, .action-btn {
+  border: 0; border-radius: 16px; cursor:pointer; font-weight: 700; padding: 13px 18px;
+  transition: transform .18s ease, opacity .18s ease;
+}
+.primary-btn { background: linear-gradient(135deg, var(--accent), #2563eb); color: #fff; }
+.secondary-btn { background: rgba(255,255,255,.08); color: var(--text); border:1px solid var(--border); }
+.danger-outline { border-color: rgba(239,68,68,.45); }
+.action-btn { background: rgba(255,255,255, .08); color: var(--text); }
+.action-btn.danger { background: rgba(239,68,68,.12); color: #ffd9d9; }
+.primary-btn:hover, .secondary-btn:hover, .action-btn:hover { transform: translateY(-1px); opacity: .96; }
+.task-list { display:grid; gap:16px; }
+.task-card {
+  border-radius: 22px;
+  padding: 18px;
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  align-items:flex-start;
+}
+.task-main { flex: 1; }
+.task-topline { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom: 12px; }
+.priority-badge, .status-badge {
+  font-size: .82rem; font-weight: 700; padding: 8px 12px; border-radius: 999px;
+}
+.priority-high { background: rgba(239,68,68,.16); color: #fecaca; }
+.priority-medium { background: rgba(245,158,11,.18); color: #fde68a; }
+.priority-low { background: rgba(34,197,94,.18); color: #bbf7d0; }
+.status-pending { background: rgba(56,189,248,.18); color: #bae6fd; }
+.status-in-progress { background: rgba(109,94,252,.18); color: #ddd6fe; }
+.status-completed { background: rgba(34,197,94,.18); color: #bbf7d0; }
+.task-title { margin: 0 0 10px; font-size: 1.15rem; }
+.task-description { margin: 0 0 12px; line-height: 1.7; }
+.task-meta { display:flex; gap:16px; flex-wrap:wrap; font-size: .92rem; }
+.task-actions { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+.empty-state {
+  border-radius: 24px; padding: 36px; text-align:center;
+  border: 1px dashed rgba(255,255,255,.18);
+  background: rgba(255,255,255,.03);
+}
+.empty-icon { font-size: 2rem; }
+@media (max-width: 1100px) {
+  .shell { grid-template-columns: 1fr; }
+  .grid-top { grid-template-columns: 1fr; }
+}
+@media (max-width: 700px) {
+  .task-form { grid-template-columns: 1fr; }
+  .hero, .task-card { flex-direction: column; }
+  .task-actions { justify-content:flex-start; }
+}
