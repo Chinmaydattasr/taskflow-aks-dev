@@ -9,7 +9,7 @@ metadata:
     appgw.ingress.kubernetes.io/appgw-ssl-certificate: "app"
 spec:
   rules:
-    - host: dev.dattsr.online
+    - host: dev.dattasr.online
       http:
         paths:
           - path: /
