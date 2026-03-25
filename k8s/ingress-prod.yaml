@@ -4,21 +4,15 @@ metadata:
   name: taskflow-prod-ingress
   namespace: prod
   annotations:
-    kubernetes.io/ingress.class: azure-application-gateway
+    kubernetes.io/ingress.class: azure/application-gateway
     appgw.ingress.kubernetes.io/ssl-redirect: "true"
-    appgw.ingress.kubernetes.io/appgw-ssl-certificate: "app"
+    appgw.ingress.kubernetes.io/appgw-ssl-certificate: "datta"
 spec:
+  ingressClassName: azure-application-gateway
   rules:
     - host: app.dattasr.online
       http:
         paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: frontend-service
-                port:
-                  number: 80
           - path: /api
             pathType: Prefix
             backend:
@@ -26,3 +20,10 @@ spec:
                 name: backend-service
                 port:
                   number: 3000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-service
+                port:
+                  number: 80
