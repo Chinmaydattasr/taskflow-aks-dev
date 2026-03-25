@@ -1,16 +1,16 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: taskflow-prod-ingress
-  namespace: prod
+  name: taskflow-dev-ingress
+  namespace: dev
   annotations:
     kubernetes.io/ingress.class: azure/application-gateway
     appgw.ingress.kubernetes.io/ssl-redirect: "true"
-    appgw.ingress.kubernetes.io/appgw-ssl-certificate: "datta"
+    appgw.ingress.kubernetes.io/appgw-ssl-certificate: "app"
 spec:
   ingressClassName: azure-application-gateway
   rules:
-    - host: app.dattasr.online
+    - host: dev.dattasr.online
       http:
         paths:
           - path: /api
@@ -26,8 +26,4 @@ spec:
               service:
                 name: frontend-service
                 port:
-<<<<<<< HEAD
                   number: 80
-=======
-                  number: 80
->>>>>>> e87b1642614bd91482fa36e4bc6d990b338a11e7
