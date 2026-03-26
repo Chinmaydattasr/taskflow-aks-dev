@@ -65,6 +65,9 @@ kubectl get pods -n dev -w
 
 
 
+
+
+
 git add .
 git commit -m "code changed"
 git push origin main 
@@ -150,6 +153,25 @@ git rm --cached -- "k8s/ingress-dev-http.yaml"
 git rm --cached -- "k8s/ingress-prod-http.yaml"
 git commit -m "Remove old ingress http files"
 git push origin main
+
+
+ipconfig /flushdns
+nslookup priv.portal.hcp.centralindia.azmk8s.io
+
+
+
+Test-NetConnection priv.portal.hcp.centralindia.azmk8s.io -Port 443
+
+priv.portal.hcp.centralindia.azmk8s.io
+
+
+PORT=3000
+DB_HOST=your-postgres-server.postgres.database.azure.com
+DB_PORT=5432
+DB_NAME=taskdb
+DB_USER=taskadmin
+DB_PASSWORD=ReplaceWithPassword
+DB_SSL=true
 
 
 
